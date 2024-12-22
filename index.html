@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Feed</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+</head>
+<body>
+    <h1>Demo Live Video Feed</h1>
+    <p>(Mostly for development thingies)</p>
+    <img src="" id="frameHolder" style="border: 2px dashed red"/>
+    <script>
+        const signalRUri = "https://quickserve-syter6.azurewebsites.net";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(signalRUri + "/hubs/camera")
+            .build();
+
+        connection.on("ReceiveFrame", (frameBytes) => {
+            document.getElementById("frameHolder").src = "data:image/jpeg;base64," + frameBytes;
+        });
+
+        connection.start()
+            .then(() => console.log("Connected to SignalR hub"))
+            .catch((err) => console.error("Could not connect to SignalR hub:", err));
+    </script>
+</body>
+</html>
